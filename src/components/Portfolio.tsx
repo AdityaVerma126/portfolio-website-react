@@ -4,7 +4,7 @@ import {
   Menu, X, ArrowRight, Download, Mail, Github, Linkedin, Phone,
   MapPin, Code2, Cpu, Database, Wrench, Layers, Trophy, Award,
   Briefcase, GraduationCap, Sparkles, ExternalLink, Send, Star,
-  CheckCircle2, Rocket, BrainCircuit, Globe,
+  CheckCircle2, Rocket, BrainCircuit, Globe, Palette, Check,
 } from "lucide-react";
 
 type NavId = "home" | "about" | "skills" | "achievements" | "experience" | "projects" | "resume" | "contact";
@@ -29,7 +29,13 @@ const LINKEDIN = "https://linkedin.com/in/aditya-verma-07126b252";
 const LEETCODE = "https://leetcode.com/u/AdityaVerma126/";
 const CODEFORCES = "https://codeforces.com";
 const AVATAR_URL = "https://media.licdn.com/dms/image/v2/D4D03AQHR4UInqoQcSA/profile-displayphoto-scale_400_400/B4DZyn_o35IUAg-/0/1772345006106?e=1784160000&v=beta&t=2jsAA-7LeTcMb7xHrKFJrE-ylrHLFaRc0Q72Sz-EZmw"; // <-- Replace with your photo URL (e.g. "/avatar.jpg" or external link)
-
+const THEMES = [
+  { name: "sage", label: "Sage", color: "#5FA28D" },
+  { name: "dark", label: "Dark", color: "#111827" },
+  { name: "ocean", label: "Ocean", color: "#0EA5E9" },
+  { name: "purple", label: "Purple", color: "#9333EA" },
+  { name: "sunset", label: "Sunset", color: "#F97316" },
+];
 
 /* ----------------------------- helpers ----------------------------- */
 
@@ -69,12 +75,12 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
   return (
     <div className="mx-auto mb-14 max-w-2xl text-center">
       <FadeIn>
-        <div className="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-mint/30 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-deep-teal">
+        <div className="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-mint/30 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-theme-primary">
           <Sparkles className="h-3.5 w-3.5" /> {eyebrow}
         </div>
       </FadeIn>
       <FadeIn delay={0.05}>
-        <h2 className="mt-4 text-4xl font-bold leading-tight text-navy-teal sm:text-5xl">
+        <h2 className="mt-4 text-4xl font-bold leading-tight text-theme sm:text-5xl">
           {title.split(" ").map((w, i) =>
             i === title.split(" ").length - 1 ? (
               <span key={i} className="text-gradient"> {w}</span>
@@ -95,10 +101,17 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
 
 /* ----------------------------- Navbar ----------------------------- */
 
-function Navbar() {
+function Navbar({
+  theme,
+  setTheme,
+}: {
+  theme: string;
+  setTheme: (theme: string) => void;
+}) {
   const active = useActiveSection();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [themeMenu, setThemeMenu] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -120,12 +133,12 @@ function Navbar() {
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4">
-        <div className={`flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-all duration-300 ${scrolled ? "glass-dark text-cream shadow-elegant" : "glass text-navy-teal"}`}>
+        <div className={`flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-all duration-300 ${scrolled ? "glass-dark text-cream shadow-elegant" : "glass text-theme"}`}>
           <button onClick={() => go("home")} className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
             <span className={`grid h-8 w-8 place-items-center rounded-lg bg-gradient-primary text-cream`}>
               <Code2 className="h-4 w-4" />
             </span>
-            <span className={scrolled ? "text-cream" : "text-navy-teal"}>{NAME.split(" ")[0]}<span className="text-teal">.</span></span>
+            <span className={scrolled ? "text-cream" : "text-theme"}>{NAME.split(" ")[0]}<span className="text-teal">.</span></span>
           </button>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -133,16 +146,15 @@ function Navbar() {
               <button
                 key={n.id}
                 onClick={() => go(n.id)}
-                className={`relative rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  active === n.id
-                    ? scrolled ? "text-cream" : "text-deep-teal"
-                    : scrolled ? "text-cream/70 hover:text-cream" : "text-navy-teal/70 hover:text-navy-teal"
-                }`}
+                className={`relative rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${active === n.id
+                  ? scrolled ? "text-cream" : "text-theme-primary"
+                  : scrolled ? "text-cream/70 hover:text-cream" : "text-theme/70 hover:text-theme"
+                  }`}
               >
                 {active === n.id && (
                   <motion.span
                     layoutId="nav-pill"
-                    className={`absolute inset-0 rounded-full ${scrolled ? "bg-cream/15" : "bg-mint/60"}`}
+                    className={`absolute inset-0 rounded-full ${scrolled ? "bg-theme-card/15" : "bg-mint/60"}`}
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -152,6 +164,50 @@ function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <div className="relative">
+
+              <button
+                onClick={() => setThemeMenu(!themeMenu)}
+                className={`grid h-10 w-10 place-items-center rounded-full border transition
+                  ${scrolled
+                    ? "border-white/20 bg-white/10 text-white"
+                    : "border-border bg-card text-theme"
+                  }`}
+              >
+                <Palette className="h-5 w-5" />
+              </button>
+              {themeMenu && (
+                <div
+                  className={`absolute right-0 top-12 rounded-2xl p-4 shadow-elegant ${scrolled ? "glass-dark" : "glass"
+                    }`}
+                >
+                  <p className="mb-3 text-sm font-semibold">Choose Theme</p>
+
+                  <div className="flex gap-3">
+                    {THEMES.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={() => {
+                          setTheme(item.name);
+                          setThemeMenu(false);
+                        }}
+                        className="relative"
+                      >
+                        <div
+                          className="h-8 w-8 rounded-full border-2"
+                          style={{ background: item.color }}
+                        />
+
+                        {theme === item.name && (
+                          <div className="absolute -right-1 -top-1 rounded-full bg-white p-0.5">
+                            <Check className="h-3 w-3 text-black" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}</div>
             <button
               onClick={() => go("contact")}
               className="hidden rounded-full bg-gradient-primary px-4 py-2 text-sm font-semibold text-cream shadow-soft transition hover:shadow-glow md:inline-flex"
@@ -160,7 +216,7 @@ function Navbar() {
             </button>
             <button
               onClick={() => setOpen((o) => !o)}
-              className={`grid h-9 w-9 place-items-center rounded-full lg:hidden ${scrolled ? "bg-cream/10 text-cream" : "bg-navy-teal/5 text-navy-teal"}`}
+              className={`grid h-9 w-9 place-items-center rounded-full lg:hidden ${scrolled ? "bg-theme-card/10 text-cream" : "bg-navy-teal/5 text-theme"}`}
               aria-label="Toggle menu"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -181,7 +237,7 @@ function Navbar() {
                 <button
                   key={n.id}
                   onClick={() => go(n.id)}
-                  className={`rounded-xl px-3 py-2 text-left text-sm font-medium ${active === n.id ? "bg-mint/60 text-deep-teal" : "text-navy-teal/80 hover:bg-mint/30"}`}
+                  className={`rounded-xl px-3 py-2 text-left text-sm font-medium ${active === n.id ? "bg-mint/60 text-theme-primary" : "text-theme/80 hover:bg-mint/30"}`}
                 >
                   {n.label}
                 </button>
@@ -226,7 +282,7 @@ function Hero() {
                 className="relative"
               >
                 <div className="h-24 w-24 rounded-full bg-gradient-primary p-[3px] shadow-elegant sm:h-28 sm:w-28">
-                  <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-cream">
+                  <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-theme-card">
                     {AVATAR_URL ? (
                       <img
                         src={AVATAR_URL}
@@ -234,7 +290,7 @@ function Hero() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="font-display text-3xl font-bold text-navy-teal sm:text-4xl">
+                      <span className="font-display text-3xl font-bold text-theme sm:text-4xl">
                         {NAME.split(" ").map((n) => n[0]).join("")}
                       </span>
                     )}
@@ -247,7 +303,7 @@ function Hero() {
             </div>
           </FadeIn>
           <FadeIn delay={0.04}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-cream/70 px-3 py-1 text-xs font-medium text-deep-teal shadow-soft">
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-theme-card/70 px-3 py-1 text-xs font-medium text-theme-primary shadow-soft">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-teal" />
@@ -256,7 +312,7 @@ function Hero() {
             </div>
           </FadeIn>
           <FadeIn delay={0.06}>
-            <h1 className="mt-5 text-5xl font-extrabold leading-[1.05] tracking-tight text-navy-teal sm:text-6xl lg:text-7xl">
+            <h1 className="mt-5 text-5xl font-extrabold leading-[1.05] tracking-tight text-theme sm:text-6xl lg:text-7xl">
               Hi, I'm <span className="text-gradient">{NAME.split(" ")[0]}</span>.<br />
               I build software that <span className="relative whitespace-nowrap">
                 <span className="text-gradient">scales</span>
@@ -283,18 +339,18 @@ function Hero() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="group inline-flex items-center gap-2 rounded-full border border-navy-teal/15 bg-cream/70 px-5 py-3 text-sm font-semibold text-navy-teal backdrop-blur transition hover:-translate-y-0.5 hover:border-teal/40 hover:bg-cream"
+                className="group inline-flex items-center gap-2 rounded-full border border-navy-teal/15 bg-theme-card/70 px-5 py-3 text-sm font-semibold text-theme backdrop-blur transition hover:-translate-y-0.5 hover:border-teal/40 hover:bg-theme-card"
               >
                 Contact Me <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </a>
             </div>
           </FadeIn>
           <FadeIn delay={0.25}>
-            <div className="mt-10 flex items-center gap-5 text-navy-teal/60">
-              <a href={GITHUB} target="_blank" rel="noreferrer" className="transition hover:text-deep-teal"><Github className="h-5 w-5" /></a>
-              <a href={LINKEDIN} target="_blank" rel="noreferrer" className="transition hover:text-deep-teal"><Linkedin className="h-5 w-5" /></a>
-              <a href={LEETCODE} target="_blank" rel="noreferrer" className="text-sm font-semibold transition hover:text-deep-teal">LeetCode</a>
-              <a href={CODEFORCES} target="_blank" rel="noreferrer" className="text-sm font-semibold transition hover:text-deep-teal">Codeforces</a>
+            <div className="mt-10 flex items-center gap-5 text-theme/60">
+              <a href={GITHUB} target="_blank" rel="noreferrer" className="transition hover:text-theme-primary"><Github className="h-5 w-5" /></a>
+              <a href={LINKEDIN} target="_blank" rel="noreferrer" className="transition hover:text-theme-primary"><Linkedin className="h-5 w-5" /></a>
+              <a href={LEETCODE} target="_blank" rel="noreferrer" className="text-sm font-semibold transition hover:text-theme-primary">LeetCode</a>
+              <a href={CODEFORCES} target="_blank" rel="noreferrer" className="text-sm font-semibold transition hover:text-theme-primary">Codeforces</a>
             </div>
           </FadeIn>
         </div>
@@ -314,8 +370,8 @@ function Hero() {
                 <span className="h-3 w-3 rounded-full bg-emerald-400/70" />
                 <span className="ml-2 text-xs text-muted-foreground">~/portfolio/profile.ts</span>
               </div>
-              <pre className="mt-4 overflow-hidden font-mono text-[12.5px] leading-relaxed text-navy-teal/90">
-{`const dev = {
+              <pre className="mt-4 overflow-hidden font-mono text-[12.5px] leading-relaxed text-theme/90">
+                {`const dev = {
   name: "${NAME}",
   role: "CS Student & SDE Intern",
   focus: ["Full-Stack", "AI/ML", "Systems"],
@@ -330,14 +386,14 @@ dev.solve(problem) // → ✨ elegant solution`}
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="glass absolute -left-6 top-10 hidden rounded-2xl px-3 py-2 text-xs font-semibold text-deep-teal shadow-soft sm:flex sm:items-center sm:gap-2"
+                className="glass absolute -left-6 top-10 hidden rounded-2xl px-3 py-2 text-xs font-semibold text-theme-primary shadow-soft sm:flex sm:items-center sm:gap-2"
               >
                 <Trophy className="h-4 w-4 text-teal" /> 100+ DSA solved
               </motion.div>
               <motion.div
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="glass absolute -right-4 bottom-6 hidden rounded-2xl px-3 py-2 text-xs font-semibold text-deep-teal shadow-soft sm:flex sm:items-center sm:gap-2"
+                className="glass absolute -right-4 bottom-6 hidden rounded-2xl px-3 py-2 text-xs font-semibold text-theme-primary shadow-soft sm:flex sm:items-center sm:gap-2"
               >
                 <Rocket className="h-4 w-4 text-teal" /> Shipping side projects
               </motion.div>
@@ -401,22 +457,22 @@ function About() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <FadeIn>
             <div className="glass h-full rounded-3xl p-7 shadow-soft">
-              <GraduationCap className="h-7 w-7 text-deep-teal" />
-              <h3 className="mt-4 text-lg font-semibold text-navy-teal">Education</h3>
+              <GraduationCap className="h-7 w-7 text-theme-primary" />
+              <h3 className="mt-4 text-lg font-semibold text-theme">Education</h3>
               <p className="mt-2 text-sm text-muted-foreground">B.Tech in Computer Science<br />Government Engineering College ,bilaspur<br />CGPA: 8 / 10 · 2022 – 2026</p>
             </div>
           </FadeIn>
           <FadeIn delay={0.05}>
             <div className="glass h-full rounded-3xl p-7 shadow-soft">
-              <Rocket className="h-7 w-7 text-deep-teal" />
-              <h3 className="mt-4 text-lg font-semibold text-navy-teal">Career Goals</h3>
+              <Rocket className="h-7 w-7 text-theme-primary" />
+              <h3 className="mt-4 text-lg font-semibold text-theme">Career Goals</h3>
               <p className="mt-2 text-sm text-muted-foreground">Build at the intersection of product and engineering at a top tech company. Long-term: ship developer tools that make engineers 10× happier.</p>
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="glass h-full rounded-3xl p-7 shadow-soft">
-              <Sparkles className="h-7 w-7 text-deep-teal" />
-              <h3 className="mt-4 text-lg font-semibold text-navy-teal">Beyond Code</h3>
+              <Sparkles className="h-7 w-7 text-theme-primary" />
+              <h3 className="mt-4 text-lg font-semibold text-theme">Beyond Code</h3>
               <p className="mt-2 text-sm text-muted-foreground">I mentor juniors at the coding club, write technical blogs, and contribute to open source. Coffee, chess and clean UI deeply matter.</p>
             </div>
           </FadeIn>
@@ -425,11 +481,11 @@ function About() {
         <FadeIn delay={0.15}>
           <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {interests.map((i) => (
-              <div key={i.label} className="group flex items-center gap-3 rounded-2xl border border-navy-teal/10 bg-cream/60 p-4 transition hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-soft">
+              <div key={i.label} className="group flex items-center gap-3 rounded-2xl border border-navy-teal/10 bg-theme-card/60 p-4 transition hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-soft">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-cream">
                   <i.icon className="h-5 w-5" />
                 </span>
-                <span className="text-sm font-semibold text-navy-teal">{i.label}</span>
+                <span className="text-sm font-semibold text-theme">{i.label}</span>
               </div>
             ))}
           </div>
@@ -442,24 +498,36 @@ function About() {
 /* ----------------------------- Skills ----------------------------- */
 
 const SKILL_GROUPS = [
-  { icon: Code2, title: "Languages", items: [
-    { n: "C++", v: 80 }, { n: "Python", v: 90 }, { n: "JavaScript", v: 70 }, { n: "Java", v: 50 },
-  ]},
-  { icon: Layers, title: "Frontend", items: [
-    { n: "React", v: 92 }, { n: "TypeScript", v: 88 }, { n: "Tailwind", v: 94 }, { n: "HTML / CSS", v: 95 },
-  ]},
-  { icon: Cpu, title: "Backend", items: [
-    { n: "Node.js", v: 86 }, { n: "Express", v: 84 }, { n: "REST APIs", v: 88 }, { n: "GraphQL", v: 70 },
-  ]},
-  { icon: Database, title: "Database", items: [
-    { n: "MongoDB", v: 82 }, { n: "MySQL", v: 80 }, { n: "PostgreSQL", v: 75 }, { n: "Redis", v: 65 },
-  ]},
-  { icon: Wrench, title: "Tools", items: [
-    { n: "Git / GitHub", v: 93 }, { n: "VS Code", v: 95 }, { n: "Linux", v: 82 }, { n: "Docker", v: 72 },
-  ]},
-  { icon: BrainCircuit, title: "AI / ML", items: [
-    { n: "PyTorch", v: 75 }, { n: "scikit-learn", v: 80 }, { n: "Pandas/NumPy", v: 88 }, { n: "LLM Apps", v: 78 },
-  ]},
+  {
+    icon: Code2, title: "Languages", items: [
+      { n: "C++", v: 80 }, { n: "Python", v: 90 }, { n: "JavaScript", v: 70 }, { n: "Java", v: 50 },
+    ]
+  },
+  {
+    icon: Layers, title: "Frontend", items: [
+      { n: "React", v: 92 }, { n: "TypeScript", v: 88 }, { n: "Tailwind", v: 94 }, { n: "HTML / CSS", v: 95 },
+    ]
+  },
+  {
+    icon: Cpu, title: "Backend", items: [
+      { n: "Node.js", v: 86 }, { n: "Express", v: 84 }, { n: "REST APIs", v: 88 }, { n: "GraphQL", v: 70 },
+    ]
+  },
+  {
+    icon: Database, title: "Database", items: [
+      { n: "MongoDB", v: 82 }, { n: "MySQL", v: 80 }, { n: "PostgreSQL", v: 75 }, { n: "Redis", v: 65 },
+    ]
+  },
+  {
+    icon: Wrench, title: "Tools", items: [
+      { n: "Git / GitHub", v: 93 }, { n: "VS Code", v: 95 }, { n: "Linux", v: 82 }, { n: "Docker", v: 72 },
+    ]
+  },
+  {
+    icon: BrainCircuit, title: "AI / ML", items: [
+      { n: "PyTorch", v: 75 }, { n: "scikit-learn", v: 80 }, { n: "Pandas/NumPy", v: 88 }, { n: "LLM Apps", v: 78 },
+    ]
+  },
 ];
 
 function Skills() {
@@ -476,14 +544,14 @@ function Skills() {
                   <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-primary text-cream shadow-soft">
                     <g.icon className="h-5 w-5" />
                   </span>
-                  <h3 className="text-lg font-semibold text-navy-teal">{g.title}</h3>
+                  <h3 className="text-lg font-semibold text-theme">{g.title}</h3>
                 </div>
                 <div className="mt-5 space-y-4">
                   {g.items.map((it) => (
                     <div key={it.n}>
                       <div className="mb-1.5 flex items-center justify-between text-sm">
-                        <span className="font-medium text-navy-teal">{it.n}</span>
-                        <span className="text-xs font-semibold text-deep-teal">{it.v}%</span>
+                        <span className="font-medium text-theme">{it.n}</span>
+                        <span className="text-xs font-semibold text-theme-primary">{it.v}%</span>
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-navy-teal/10">
                         <motion.div
@@ -507,10 +575,10 @@ function Skills() {
           <div className="glass mt-10 rounded-3xl p-6 shadow-soft">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h3 className="text-lg font-semibold text-navy-teal">Contribution activity</h3>
+                <h3 className="text-lg font-semibold text-theme">Contribution activity</h3>
                 <p className="text-sm text-muted-foreground">Last 6 months · consistent shipping</p>
               </div>
-              <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-deep-teal hover:underline">
+              <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-theme-primary hover:underline">
                 <Github className="h-4 w-4" /> View GitHub
               </a>
             </div>
@@ -555,9 +623,9 @@ function ContribGraph() {
 /* ----------------------------- Achievements ----------------------------- */
 
 const ACHIEVEMENTS = [
- /* { icon: Trophy, title: "LeetCode Knight", sub: "Rating 2050 · Top 3%", year: "2025" },
-  { icon: Award, title: "Codeforces Specialist", sub: "Max rating 1620", year: "2025" },
-  { icon: Star, title: "Smart India Hackathon", sub: "National Finalist · Team Lead", year: "2024" },*/
+  /* { icon: Trophy, title: "LeetCode Knight", sub: "Rating 2050 · Top 3%", year: "2025" },
+   { icon: Award, title: "Codeforces Specialist", sub: "Max rating 1620", year: "2025" },
+   { icon: Star, title: "Smart India Hackathon", sub: "National Finalist · Team Lead", year: "2024" },*/
   { icon: CheckCircle2, title: "AWS Cloud Practitioner", sub: "Certified · Score 902/1000", year: "2024" },
   { icon: Trophy, title: "GATE CS 2026", sub: "AIR 6034 · Score 526", year: "2026" },
   { icon: Github, title: "Open Source", sub: "20+ merged PRs across OSS repos", year: "2023–25" },
@@ -579,8 +647,8 @@ function Achievements() {
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="truncate font-semibold text-navy-teal">{a.title}</h3>
-                      <span className="rounded-full bg-mint/60 px-2 py-0.5 text-[10px] font-semibold text-deep-teal">{a.year}</span>
+                      <h3 className="truncate font-semibold text-theme">{a.title}</h3>
+                      <span className="rounded-full bg-mint/60 px-2 py-0.5 text-[10px] font-semibold text-theme-primary">{a.year}</span>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{a.sub}</p>
                   </div>
@@ -657,12 +725,12 @@ function Experience() {
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 sm:flex sm:flex-wrap sm:justify-between">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <Briefcase className="h-4 w-4 shrink-0 text-deep-teal" />
-                          <h3 className="truncate text-base font-semibold text-navy-teal sm:text-lg">{e.role}</h3>
+                          <Briefcase className="h-4 w-4 shrink-0 text-theme-primary" />
+                          <h3 className="truncate text-base font-semibold text-theme sm:text-lg">{e.role}</h3>
                         </div>
-                        <p className="mt-1 text-sm font-medium text-deep-teal">{e.org}</p>
+                        <p className="mt-1 text-sm font-medium text-theme-primary">{e.org}</p>
                       </div>
-                      <span className="shrink-0 rounded-full bg-mint/60 px-3 py-1 text-xs font-semibold text-deep-teal">{e.duration}</span>
+                      <span className="shrink-0 rounded-full bg-mint/60 px-3 py-1 text-xs font-semibold text-theme-primary">{e.duration}</span>
                     </div>
                     <ul className="mt-4 space-y-2">
                       {e.points.map((p) => (
@@ -674,7 +742,7 @@ function Experience() {
                     </ul>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {e.tech.map((t) => (
-                        <span key={t} className="rounded-full border border-teal/30 bg-cream/80 px-2.5 py-0.5 text-xs font-medium text-deep-teal">{t}</span>
+                        <span key={t} className="rounded-full border border-teal/30 bg-theme-card/80 px-2.5 py-0.5 text-xs font-medium text-theme-primary">{t}</span>
                       ))}
                     </div>
                   </div>
@@ -696,16 +764,16 @@ const PROJECTS = [
     desc: "Hyperspectral Image Classification on the Salinas-A dataset using a pretrained Hyperspectral Vision Transformer (HVT) with MMD domain adaptation from Indian Pines.",
     tags: ["Hyperspectral Vision Transformer", "Machine Learning", "Python", "PyTorch", "streamlit"],
     hue: "from-mint/60 via-soft-green/50 to-teal/40",
-     github: "https://github.com/AdityaVerma126/hsi-agriculture-model",
-     live: "https://your-demo.vercel.app"
+    github: "https://github.com/AdityaVerma126/hsi-agriculture-model",
+    live: "https://your-demo.vercel.app"
   },
   {
     title: "COPD Asthma Classifier -Bi-GRU DEEP LEARNING MODEL",
     desc: "Developed a deep learning-based respiratory disease classification system using a Bidirectional Gated Recurrent Unit (Bi-GRU) network to classify lung sound recordings into COPD, Asthma, and Normal categories. The model extracts acoustic features such as MFCCs and spectral features from respiratory audio and leverages Bi-GRU to capture temporal patterns for accurate diagnosis. A user-friendly Streamlit interface was built for real-time prediction, making the system suitable for computer-aided respiratory disease screening.",
     tags: ["Bi-GRU Neural Network", "TensorFlow", "Streamlit", "Python"],
     hue: "from-soft-green/60 via-sage/50 to-deep-teal/40",
-     github: "https://github.com/AdityaVerma126/copd-asthma-classifier",
-     live: "https://your-demo.vercel.app"
+    github: "https://github.com/AdityaVerma126/copd-asthma-classifier",
+    live: "https://your-demo.vercel.app"
 
   },
   {
@@ -713,16 +781,16 @@ const PROJECTS = [
     desc: "FitSync is a comprehensive fitness tracking application built with React Native and Expo, featuring user authentication, exercise tracking, diet monitoring, and schedule management.",
     tags: ["React Native Expo", "JWT", "MongoDB", "Express.js", "Node.js"],
     hue: "from-sage/60 via-teal/50 to-dark-teal/40",
-     github: "https://github.com/AdityaVerma126/fitsync",
-     live: "https://your-demo.vercel.app"
+    github: "https://github.com/AdityaVerma126/fitsync",
+    live: "https://your-demo.vercel.app"
   },
   {
     title: "FOOTCAP - Footwear Ecommerce website",
     desc: "A modern, fully responsive footwear eCommerce platform built with MERN stack (MongoDB, Express.js, React.js, Node.js). It features user authentication, product catalog, shopping cart, and secure payment integration.",
     tags: ["React.js", "Express.js", "Node.js", "MongoDB"],
     hue: "from-mint/50 via-teal/50 to-navy-teal/30",
-     github: "https://github.com/AdityaVerma126/footwear-ecommerce-website",
-     live: "https://your-demo.vercel.app"
+    github: "https://github.com/AdityaVerma126/footwear-ecommerce-website",
+    live: "https://your-demo.vercel.app"
   },
 ];
 
@@ -736,7 +804,12 @@ function Projects() {
             <FadeIn key={p.title} delay={i * 0.05}>
               <article className="group relative overflow-hidden rounded-3xl border border-navy-teal/10 bg-card shadow-soft transition hover:-translate-y-1 hover:border-teal/40 hover:shadow-elegant">
                 {/* preview */}
-                <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${p.hue}`}>
+                <div
+                  className="relative h-44 overflow-hidden"
+                  style={{
+                    background: `linear-gradient(135deg,var(--primary),var(--accent), var(--foreground))`,
+                  }}
+                >
                   <div
                     className="absolute inset-0 opacity-25"
                     style={{
@@ -745,27 +818,46 @@ function Projects() {
                       backgroundSize: "26px 26px, 32px 32px",
                     }}
                   />
-                  <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-cream/80 p-3 backdrop-blur">
+                  <div className="absolute inset-x-6 bottom-6 rounded-2xl bg-theme-card/80 p-3 backdrop-blur" style={{
+                    background: "color-mix(in oklab, var(--card) 82%, transparent)",
+                    borderColor: "color-mix(in oklab, var(--border) 80%, transparent)",
+                  }}>
                     <div className="flex gap-1.5">
                       <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
                       <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
                     </div>
-                    <div className="mt-2 h-2 w-3/4 rounded bg-deep-teal/30" />
-                    <div className="mt-1.5 h-2 w-2/4 rounded bg-deep-teal/20" />
+                    <div
+                      className="mt-2 h-2 w-3/4 rounded"
+                      style={{
+                        background: "color-mix(in oklab, var(--primary) 35%, transparent)",
+                      }}
+                    />
+                    <div
+                      className="mt-1.5 h-2 w-2/4 rounded"
+                      style={{
+                        background: "color-mix(in oklab, var(--primary) 22%, transparent)",
+                      }}
+                    />
                   </div>
-                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-cream/30 to-transparent transition duration-700 group-hover:translate-x-full" />
+                  <div
+                    className="absolute inset-0 -translate-x-full transition duration-700 group-hover:translate-x-full"
+                    style={{
+                      background:
+                        "linear-gradient(to right, transparent, color-mix(in oklab,var(--card) 40%,transparent), transparent)",
+                    }}
+                  />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold text-navy-teal">{p.title}</h3>
+                  <h3 className="text-lg font-semibold text-theme">{p.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
                   <div className="mt-4 flex flex-wrap gap-1.5">
                     {p.tags.map((t) => (
-                      <span key={t} className="rounded-full border border-teal/30 bg-mint/30 px-2.5 py-0.5 text-xs font-medium text-deep-teal">{t}</span>
+                      <span key={t} className="rounded-full border border-teal/30 bg-mint/30 px-2.5 py-0.5 text-xs font-medium text-theme-primary">{t}</span>
                     ))}
                   </div>
                   <div className="mt-5 flex items-center gap-2">
-                    <a href={p.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-navy-teal/15 bg-cream px-3 py-1.5 text-xs font-semibold text-navy-teal transition hover:border-teal/40">
+                    <a href={p.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-navy-teal/15 bg-theme-card px-3 py-1.5 text-xs font-semibold text-theme transition hover:border-teal/40">
                       <Github className="h-3.5 w-3.5" /> Code
                     </a>
                     <a href={p.live} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-cream transition hover:shadow-glow">
@@ -794,7 +886,7 @@ function Resume() {
           <div className="relative grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="text-cream">
               <FadeIn>
-                <div className="inline-flex items-center gap-2 rounded-full bg-cream/15 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em]">
+                <div className="inline-flex items-center gap-2 rounded-full bg-theme-card/15 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em]">
                   <Download className="h-3.5 w-3.5" /> Resume
                 </div>
               </FadeIn>
@@ -806,13 +898,13 @@ function Resume() {
               </FadeIn>
               <FadeIn delay={0.15}>
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <a href="#" download className="inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 text-sm font-semibold text-deep-teal shadow-soft transition hover:-translate-y-0.5 hover:shadow-glow">
+                  <a href="#" download className="inline-flex items-center gap-2 rounded-full bg-theme-card px-5 py-3 text-sm font-semibold text-theme-primary shadow-soft transition hover:-translate-y-0.5 hover:shadow-glow">
                     <Download className="h-4 w-4" /> Download Resume
                   </a>
-                  <a href={LINKEDIN} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-5 py-3 text-sm font-semibold text-cream backdrop-blur transition hover:bg-cream/20">
+                  <a href={LINKEDIN} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-theme-card/10 px-5 py-3 text-sm font-semibold text-cream backdrop-blur transition hover:bg-theme-card/20">
                     <Linkedin className="h-4 w-4" /> LinkedIn
                   </a>
-                  <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-5 py-3 text-sm font-semibold text-cream backdrop-blur transition hover:bg-cream/20">
+                  <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-theme-card/10 px-5 py-3 text-sm font-semibold text-cream backdrop-blur transition hover:bg-theme-card/20">
                     <Github className="h-4 w-4" /> GitHub
                   </a>
                 </div>
@@ -827,7 +919,7 @@ function Resume() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-base font-semibold text-navy-teal">{NAME}</div>
+                      <div className="text-base font-semibold text-theme">{NAME}</div>
                       <div className="text-xs text-muted-foreground">CS Student · SDE Intern</div>
                     </div>
                     <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-cream font-bold">AS</div>
@@ -868,7 +960,7 @@ function Contact() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.2fr]">
           <FadeIn>
             <div className="glass h-full rounded-3xl p-7 shadow-soft">
-              <h3 className="text-lg font-semibold text-navy-teal">Reach me directly</h3>
+              <h3 className="text-lg font-semibold text-theme">Reach me directly</h3>
               <p className="mt-1 text-sm text-muted-foreground">Prefer email or LinkedIn? I'm one click away.</p>
               <div className="mt-6 space-y-4">
                 {[
@@ -879,13 +971,13 @@ function Contact() {
                   { icon: MapPin, label: "Location", value: LOCATION },
                 ].map((c) => (
                   <a key={c.label} href={c.href} target={c.href?.startsWith("http") ? "_blank" : undefined} rel="noreferrer"
-                     className="flex items-center gap-4 rounded-2xl border border-navy-teal/10 bg-cream/60 p-3 transition hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-soft">
+                    className="flex items-center gap-4 rounded-2xl border border-navy-teal/10 bg-theme-card/60 p-3 transition hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-soft">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-primary text-cream">
                       <c.icon className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
                       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{c.label}</div>
-                      <div className="truncate text-sm font-medium text-navy-teal">{c.value}</div>
+                      <div className="truncate text-sm font-medium text-theme">{c.value}</div>
                     </div>
                   </a>
                 ))}
@@ -898,7 +990,7 @@ function Contact() {
               onSubmit={(e) => { e.preventDefault(); setSent(true); setTimeout(() => setSent(false), 3000); (e.target as HTMLFormElement).reset(); }}
               className="glass h-full rounded-3xl p-7 shadow-soft"
             >
-              <h3 className="text-lg font-semibold text-navy-teal">Send a message</h3>
+              <h3 className="text-lg font-semibold text-theme">Send a message</h3>
               <p className="mt-1 text-sm text-muted-foreground">I'll get back within 24 hours.</p>
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field label="Name" name="name" placeholder="Your full name" />
@@ -913,7 +1005,7 @@ function Contact() {
                   required
                   rows={5}
                   placeholder="Tell me a bit about the role, project, or what you have in mind…"
-                  className="w-full resize-none rounded-2xl border border-navy-teal/10 bg-cream/80 px-4 py-3 text-sm text-navy-teal outline-none ring-teal/30 transition placeholder:text-muted-foreground/70 focus:border-teal/50 focus:ring-4"
+                  className="w-full resize-none rounded-2xl border border-navy-teal/10 bg-theme-card/80 px-4 py-3 text-sm text-theme outline-none ring-teal/30 transition placeholder:text-muted-foreground/70 focus:border-teal/50 focus:ring-4"
                 />
               </div>
               <div className="mt-6 flex items-center justify-between gap-3">
@@ -940,7 +1032,7 @@ function Field({ label, name, type = "text", placeholder }: { label: string; nam
         type={type}
         required
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-navy-teal/10 bg-cream/80 px-4 py-3 text-sm text-navy-teal outline-none ring-teal/30 transition placeholder:text-muted-foreground/70 focus:border-teal/50 focus:ring-4"
+        className="w-full rounded-2xl border border-navy-teal/10 bg-theme-card/80 px-4 py-3 text-sm text-theme outline-none ring-teal/30 transition placeholder:text-muted-foreground/70 focus:border-teal/50 focus:ring-4"
       />
     </div>
   );
@@ -950,18 +1042,18 @@ function Field({ label, name, type = "text", placeholder }: { label: string; nam
 
 function Footer() {
   return (
-    <footer className="relative mt-10 border-t border-navy-teal/10 bg-cream/60 py-10">
+    <footer className="relative mt-10 border-t border-navy-teal/10 bg-theme-card/60 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:flex-row">
-        <div className="flex items-center gap-2 font-display text-lg font-bold text-navy-teal">
+        <div className="flex items-center gap-2 font-display text-lg font-bold text-theme">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-primary text-cream">
             <Code2 className="h-4 w-4" />
           </span>
           {NAME}
         </div>
-        <div className="flex items-center gap-4 text-navy-teal/60">
-          <a href={GITHUB} target="_blank" rel="noreferrer" className="transition hover:text-deep-teal"><Github className="h-5 w-5" /></a>
-          <a href={LINKEDIN} target="_blank" rel="noreferrer" className="transition hover:text-deep-teal"><Linkedin className="h-5 w-5" /></a>
-          <a href={`mailto:${EMAIL}`} className="transition hover:text-deep-teal"><Mail className="h-5 w-5" /></a>
+        <div className="flex items-center gap-4 text-theme/60">
+          <a href={GITHUB} target="_blank" rel="noreferrer" className="transition hover:text-theme-primary"><Github className="h-5 w-5" /></a>
+          <a href={LINKEDIN} target="_blank" rel="noreferrer" className="transition hover:text-theme-primary"><Linkedin className="h-5 w-5" /></a>
+          <a href={`mailto:${EMAIL}`} className="transition hover:text-theme-primary"><Mail className="h-5 w-5" /></a>
         </div>
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {NAME} · Built with passion and code.</p>
       </div>
@@ -1001,11 +1093,31 @@ function CursorGlow() {
 /* ----------------------------- Page ----------------------------- */
 
 export default function Portfolio() {
+  const [theme, setTheme] = useState("sage");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.className = saved;
+    } else {
+      document.documentElement.className = "sage";
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <CursorGlow />
       <ScrollProgress />
-      <Navbar />
+      <Navbar
+        theme={theme}
+        setTheme={setTheme} />
       <main>
         <Hero />
         <About />
