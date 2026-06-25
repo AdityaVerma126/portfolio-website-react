@@ -692,28 +692,37 @@ function Experience() {
 
 const PROJECTS = [
   {
-    title: "Synapse — AI Study Assistant",
-    desc: "An LLM-powered study buddy that turns lecture PDFs into flashcards, summaries and adaptive quizzes.",
-    tags: ["Next.js", "OpenAI", "Postgres", "Tailwind"],
+    title: "HSI - Agricultural model ",
+    desc: "Hyperspectral Image Classification on the Salinas-A dataset using a pretrained Hyperspectral Vision Transformer (HVT) with MMD domain adaptation from Indian Pines.",
+    tags: ["Hyperspectral Vision Transformer", "Machine Learning", "Python", "PyTorch", "streamlit"],
     hue: "from-mint/60 via-soft-green/50 to-teal/40",
+     github: "https://github.com/AdityaVerma126/hsi-agriculture-model",
+     live: "https://your-demo.vercel.app"
   },
   {
-    title: "DevPulse — GitHub Analytics",
-    desc: "A dashboard that visualizes contribution patterns, PR velocity and team health for engineering teams.",
-    tags: ["React", "TypeScript", "D3", "Node"],
+    title: "COPD Asthma Classifier -Bi-GRU DEEP LEARNING MODEL",
+    desc: "Developed a deep learning-based respiratory disease classification system using a Bidirectional Gated Recurrent Unit (Bi-GRU) network to classify lung sound recordings into COPD, Asthma, and Normal categories. The model extracts acoustic features such as MFCCs and spectral features from respiratory audio and leverages Bi-GRU to capture temporal patterns for accurate diagnosis. A user-friendly Streamlit interface was built for real-time prediction, making the system suitable for computer-aided respiratory disease screening.",
+    tags: ["Bi-GRU Neural Network", "TensorFlow", "Streamlit", "Python"],
     hue: "from-soft-green/60 via-sage/50 to-deep-teal/40",
+     github: "https://github.com/AdityaVerma126/copd-asthma-classifier",
+     live: "https://your-demo.vercel.app"
+
   },
   {
-    title: "QuickPay — Mini UPI Clone",
-    desc: "A wallet & payments app with transactions, friends list and statement export. Real-time updates via sockets.",
-    tags: ["React Native", "Express", "MongoDB", "Socket.IO"],
+    title: "FitSync - Fitness Tracking Mobile App",
+    desc: "FitSync is a comprehensive fitness tracking application built with React Native and Expo, featuring user authentication, exercise tracking, diet monitoring, and schedule management.",
+    tags: ["React Native Expo", "JWT", "MongoDB", "Express.js", "Node.js"],
     hue: "from-sage/60 via-teal/50 to-dark-teal/40",
+     github: "https://github.com/AdityaVerma126/fitsync",
+     live: "https://your-demo.vercel.app"
   },
   {
-    title: "InboxZero — Smart Email Triage",
-    desc: "Classifies your inbox into actionable buckets with explainable AI tags and one-click reply drafts.",
-    tags: ["Python", "FastAPI", "scikit-learn", "React"],
+    title: "FOOTCAP - Footwear Ecommerce website",
+    desc: "A modern, fully responsive footwear eCommerce platform built with MERN stack (MongoDB, Express.js, React.js, Node.js). It features user authentication, product catalog, shopping cart, and secure payment integration.",
+    tags: ["React.js", "Express.js", "Node.js", "MongoDB"],
     hue: "from-mint/50 via-teal/50 to-navy-teal/30",
+     github: "https://github.com/AdityaVerma126/footwear-ecommerce-website",
+     live: "https://your-demo.vercel.app"
   },
 ];
 
@@ -756,10 +765,10 @@ function Projects() {
                     ))}
                   </div>
                   <div className="mt-5 flex items-center gap-2">
-                    <a href={GITHUB} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-navy-teal/15 bg-cream px-3 py-1.5 text-xs font-semibold text-navy-teal transition hover:border-teal/40">
+                    <a href={p.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-navy-teal/15 bg-cream px-3 py-1.5 text-xs font-semibold text-navy-teal transition hover:border-teal/40">
                       <Github className="h-3.5 w-3.5" /> Code
                     </a>
-                    <a href="#" className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-cream transition hover:shadow-glow">
+                    <a href={p.live} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-cream transition hover:shadow-glow">
                       Live Demo <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   </div>
